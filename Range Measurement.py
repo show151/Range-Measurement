@@ -27,7 +27,11 @@ while True:
     #ストリームからデータ取得
     audio_data=stream.read(BUFFER_SIZE)
     data=np.frombuffer(audio_data,dtype='int16')
-    fd = np.fft.fft(data)
+
+    #ハミング窓関数
+    windowed_data = data * np.hamming(len(data))
+
+    fd = np.fft.fft(windowed_data)
     fft_data = np.abs(fd[:BUFFER_SIZE//2])
     freq=np.fft.fftfreq(BUFFER_SIZE, d=1/RATE)
 
