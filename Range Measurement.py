@@ -61,9 +61,11 @@ while True:
     wave_fig.cla()
 
   except KeyboardInterrupt: #ctrl+cで終了
-    break
+    pass
 
-#終了処理
-stream.stop_stream()
-stream.close()
-audio.terminate()
+  finally:
+    #終了処理
+    stream.stop_stream()
+    stream.close()
+    audio.terminate()
+    cv2.destroyAllWindows()
