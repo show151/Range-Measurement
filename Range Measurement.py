@@ -3,13 +3,14 @@ import pyaudio as pa
 import numpy as np
 import cv2
 from PIL import Image, ImageFont, ImageDraw
+import random
 
 RATE=44100
 BUFFER_SIZE=16384
 
 HEIGHT=300
 WIDTH=400
-SCALE=['ラ', 'ラ#', 'シ', 'ド', 'ド#', 'レ', 'レ#', 'ミ', 'ミ#', 'ファ', 'ファ#', 'ソ', 'ソ#']
+SCALE=['ラ', 'ラ#', 'シ', 'ド', 'ド#', 'レ', 'レ#', 'ミ', 'ファ', 'ファ#', 'ソ', 'ソ#']
 
 #ストリーム準備
 audio = pa.PyAudio()
@@ -18,10 +19,11 @@ stream = audio.open(rate=RATE, channels=1, format=pa.paInt16, input=True, frames
 #波形プロット用バッファ
 data_buffer = np.zeros(BUFFER_SIZE*16, int)
 
-#二つのプロットを並べて描画
-fig = plt.figure()
-fft_fig = fig.add_subplot(2,1,1)
-wave_fig = fig.add_subplot(2,1,2)
+#プロット描画
+fig, (fft_fig, wave_fig) = plt.subplots(2, 1)
+
+#目標音階設定
+target_scale_num = random.randint(0, len(SCALE)-1)
 
 while True:
   try:
@@ -36,6 +38,10 @@ while True:
     val=freq[np.argmax(fft_data)]
     offset = 0.5 if val >= 440 else -0.5
     scale_num=int(np.log2((val/440.0)**12)+offset)%len(SCALE)
+
+    #判定
+    if scale_num == target_scale_num:
+      target_scale_num = random.randint(0, len(SCALE)-1)
 
     #描画準備
     canvas = np.full((HEIGHT,WIDTH,3),255,np.uint8)
