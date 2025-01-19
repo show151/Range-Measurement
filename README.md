@@ -100,7 +100,11 @@ try:
     fft_fig.cla()
     wave_fig.cla()
 
-except KeyboardInterrupt: #ctrl+cで終了
+    # 'q'キーが押されたらループを終了
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+      break
+
+except KeyboardInterrupt:
   pass
 
 finally:
