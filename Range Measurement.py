@@ -22,9 +22,6 @@ data_buffer = np.zeros(BUFFER_SIZE*16, int)
 #プロット描画
 fig, (fft_fig, wave_fig) = plt.subplots(2, 1)
 
-#目標音階設定
-target_scale_num = random.randint(0, len(SCALE)-1)
-
 while True:
   try:
     #ストリームからデータ取得
@@ -38,10 +35,6 @@ while True:
     val=freq[np.argmax(fft_data)]
     offset = 0.5 if val >= 440 else -0.5
     scale_num=int(np.log2((val/440.0)**12)+offset)%len(SCALE)
-
-    #判定
-    if scale_num == target_scale_num:
-      target_scale_num = random.randint(0, len(SCALE)-1)
 
     #描画準備
     canvas = np.full((HEIGHT,WIDTH,3),255,np.uint8)
