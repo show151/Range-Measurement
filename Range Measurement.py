@@ -3,7 +3,6 @@ import pyaudio as pa
 import numpy as np
 import cv2
 from PIL import Image, ImageFont, ImageDraw
-import random
 
 RATE=44100
 BUFFER_SIZE=16384
@@ -22,8 +21,8 @@ data_buffer = np.zeros(BUFFER_SIZE*16, int)
 #プロット描画
 fig, (fft_fig, wave_fig) = plt.subplots(2, 1)
 
-while True:
-  try:
+try:
+  while True:
     #ストリームからデータ取得
     audio_data=stream.read(BUFFER_SIZE)
     data=np.frombuffer(audio_data,dtype='int16')
@@ -31,6 +30,7 @@ while True:
     #ハミング窓関数
     windowed_data = data * np.hamming(len(data))
 
+    #FFT計算
     fd = np.fft.fft(windowed_data)
     fft_data = np.abs(fd[:BUFFER_SIZE//2])
     freq=np.fft.fftfreq(BUFFER_SIZE, d=1/RATE)
@@ -45,7 +45,7 @@ while True:
 
     #日本語描画
     #フォントへのpath指定
-    font = ImageFont.truetype("C:/Users/show5/NikkyouSans-mLKax.ttf", 75)
+    font = ImageFont.truetype("C:/Users/show5/NikkyouSans-mLKax.ttf", 120)
     canvas = Image.fromarray(canvas)
     draw = ImageDraw.Draw(canvas)
     draw.text((20, 100), SCALE[scale_num], font=font, fill=(0, 0, 0, 0))
@@ -63,12 +63,12 @@ while True:
     fft_fig.cla()
     wave_fig.cla()
 
-  except KeyboardInterrupt: #ctrl+cで終了
-    pass
+except KeyboardInterrupt: #ctrl+cで終了
+  pass
 
-  finally:
-    #終了処理
-    stream.stop_stream()
-    stream.close()
-    audio.terminate()
-    cv2.destroyAllWindows()
+finally:
+  #終了処理
+  stream.stop_stream()
+  stream.close()
+  audio.terminate()
+  cv2.destroyAllWindows()
